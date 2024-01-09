@@ -22,7 +22,7 @@ try:
     print(f"Command-line options provided: \n"
           f"\t {perf_file} as PERF file \n"
           f"\t {genome_file} as Genome file \n"
-          f"\t {output_file} as output JSON \n")
+          f"\t {output_file} as output file \n")
 
 except IndexError:
 
@@ -42,7 +42,7 @@ def run(chromosome):
     print("Saving results")
     common_functions.repeat_abundance(repeat_count_list=rep_count_list,
                                       raw_base_counts=chr_base_count,
-                                      tsv_file="D:/ACTREC/Poster/PrimaryAnalysis/Results/RefGenome/GRCh38.p14",
+                                      tsv_file=output_file
                                       chr_name=chromosome)
 
 
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     print("\n Reading PERF TSV file")
     # perf_data = common_functions.import_tsv(file=perf_file)
-    perf_data = common_functions.import_tsv(file="D:/ACTREC/Review Paper/Scripts/Repeat Density/files/T2T-CHM13v2.0_perf_annotation.tsv")
+    perf_data = common_functions.import_tsv(file=perf_file)
 
     # determining number of valid data rows
     print("\n Determining number of valid rows")
