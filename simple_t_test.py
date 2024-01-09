@@ -46,12 +46,14 @@ try:
     f1 = args[1]
     f2 = args[2]
     output_folder = args[3]
-    num_files = args[4]
+    image_folder = args[4]
+    num_files = args[5]
 
     print(f"Command-line options provided: \n"
           f"\t {f1} as folder holding Reference Sequence RDL data \n",
           f"\t {f2} as folder holding Cell-Line RDL data \n",
           f"\t {output_folder} as folder holding t-test output \n",
+          f"\t {image_folder} as folder holding t-test plots \n",
           f"\t {num_files} as how many files to process, any number between 1-25. \n\t Use 23 to process first 23 files which is equivalent to processing 23 chromosomes (leaving Y and unmapped, if any)",
           )
     
@@ -74,27 +76,6 @@ f1_paths = [f.replace("\\", "/") for f in glob(f1)][:int(num_files)]
 f2_paths = [f.replace("\\", "/") for f in glob(f2)][:int(num_files)]
 
 print(len(f1_paths), len(f2_paths))
-
-
-# %%
-
-# getting folder paths from input folders and saving them according to group (normal/tumor)
-
-f1 = "D:\ACTREC\Poster\PrimaryAnalysis\Results\RefGenome"
-f2 = "D:\ACTREC\Poster\PrimaryAnalysis\Results\CellLine"
-output_folder = "D:\ACTREC\Poster\SecondaryAnalysis\\new_Result\Files"
-image_folder = "D:\ACTREC\Poster\SecondaryAnalysis\\new_Result\Graphs"
-num_files = 23
-
-output_file = output_folder + '\\' + 't-test' + '.csv'
-# output_file = output_folder + '\\' + 't-test' + '.xlsx'
-
-# RS_files = [os.path.join(f1, entry) for entry in os.listdir(f1) if os.path.isdir(os.path.join(f1, entry))]
-
-# CL_files = [os.path.join(f2, entry) for entry in os.listdir(f2) if os.path.isdir(os.path.join(f2, entry))]
-
-# print(RS_files, '\n', CL_files)
-
 
 
 # %%
@@ -140,15 +121,6 @@ def get_files_in_folders(root_directory):
 
 ref_seq_files = get_files_in_folders(f1)
 cell_line_files = get_files_in_folders(f2)
-
-
-# # Display the dictionary containing folder names as keys and lists of file paths as values
-# for folder, files in cell_line_files.items():
-#     print(f"Folder: {folder}")
-#     print(f"Files:")
-#     for file_path in files:
-#         print(file_path)
-#     print("---------------")
     
 
 
@@ -252,13 +224,6 @@ out_dict = dict()
 
 for index, row in combined_df.iterrows():
 
-    run_num_out += 1
-
-    # print(index)
-
-    # stats.ttest_ind(a=row)
-
-    # print(row)
 
     # going 1 row deep means going into a chromosome
     out_dict.update({
@@ -267,14 +232,10 @@ for index, row in combined_df.iterrows():
 
     for j in range(6):
 
-        run_num_j += 1
-
         temp_list = list()
 
 
         for i in range(len(combined_df.columns)):
-
-            # run_num_j += 1
 
             # making a list to hold values of RDLs of all the samples
             temp_list.append(row.iloc[i][j])
@@ -292,55 +253,55 @@ for index, row in combined_df.iterrows():
         # I will plot dist_plot to check for normality, will also calculate shapiro-wilks.
         # dist-plots will have 6 plots in 1 figure
 
-        # img_path = image_folder + '\\' + 'Normality' + '\\' + index
+        img_path = image_folder + '\\' + 'Normality' + '\\' + index
 
-        # if Path(img_path).is_dir():
-        #     print(f"The directory {image_folder} exists.")
-        # else:
-        #     print(f"The directory {image_folder} does not exist; attempting to create")
-        #     Path(img_path).mkdir(parents=True, exist_ok=False)
+        if Path(img_path).is_dir():
+            print(f"The directory {image_folder} exists.")
+        else:
+            print(f"The directory {image_folder} does not exist; attempting to create")
+            Path(img_path).mkdir(parents=True, exist_ok=False)
 
 
-        # fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+        fig, axes = plt.subplots(1, 2, figsize=(12, 6))
 
-        # fig.suptitle(f'Histogram plot of {index} {rep_motifs[j]}s', fontsize=16)
+        fig.suptitle(f'Histogram plot of {index} {rep_motifs[j]}s', fontsize=16)
 
-        # sns.distplot(temp_list[:6], hist=True, kde=True, bins=5, color="blue", ax=axes[0])
+        sns.distplot(temp_list[:6], hist=True, kde=True, bins=5, color="blue", ax=axes[0])
 
-        # axes[0].set_xlabel('Repeat Density')  # Set x-axis label for the first subplot
-        # axes[0].set_ylabel('PDF')       # Set y-axis label for the first subplot
-        # # axes[0].set_title(f'Histogram plot of {index} {rep_motifs}[j]s')
+        axes[0].set_xlabel('Repeat Density')  # Set x-axis label for the first subplot
+        axes[0].set_ylabel('PDF')       # Set y-axis label for the first subplot
+        # axes[0].set_title(f'Histogram plot of {index} {rep_motifs}[j]s')
 
-        # sns.distplot(temp_list[6:], hist=True, kde=True, bins=5, color="blue", ax=axes[1])
+        sns.distplot(temp_list[6:], hist=True, kde=True, bins=5, color="blue", ax=axes[1])
 
-        # axes[1].set_xlabel('Repeat Density')  # Set x-axis label for the first subplot
-        # axes[1].set_ylabel('PDF')       # Set y-axis label for the first subplot
-        # # axes[1].set_title(f'Histogram plot of {index} {rep_motifs}[j]s')
+        axes[1].set_xlabel('Repeat Density')  # Set x-axis label for the first subplot
+        axes[1].set_ylabel('PDF')       # Set y-axis label for the first subplot
+        # axes[1].set_title(f'Histogram plot of {index} {rep_motifs}[j]s')
 
-        # image_file = img_path + '\\' + f'{rep_motifs[j]}.png'
+        image_file = img_path + '\\' + f'{rep_motifs[j]}.png'
 
-        # plt.savefig(image_file)
-        # plt.show()
+        plt.savefig(image_file)
+        plt.show()
 
 
         # plotting boxplots to check for equal variances between refseq and Cellline
 
         # Creating a boxplot using pandas
 
-        # df = pandas.DataFrame(data=[temp_list[:2], temp_list[2:]],
-        #                       index=['RefSeq', 'CellLine'])
+        df = pandas.DataFrame(data=[temp_list[:2], temp_list[2:]],
+                              index=['RefSeq', 'CellLine'])
         
-        # print(df)
+        print(df)
 
-        # df.boxplot()
+        df.boxplot()
 
-        # # Setting title and labels
-        # plt.title(f'Boxplot of RefSeq and Cellline data {index}')
-        # plt.xlabel('Groups')
-        # plt.ylabel('Values')
+        # Setting title and labels
+        plt.title(f'Boxplot of RefSeq and Cellline data {index}')
+        plt.xlabel('Groups')
+        plt.ylabel('Values')
 
-        # # Show the plot
-        # plt.show()
+        # Show the plot
+        plt.show()
 
         # Performing Levene's test for variance homogeneity
         l_statistic, l_p_value = stats.levene(temp_list[:6], temp_list[6:])
@@ -372,9 +333,6 @@ for index, row in combined_df.iterrows():
 
             print(f" \n There is statistically significant difference between Normal and Tumor")
 
-            # out_dict[index][rep_motifs[j]].append(statstic)
-            # out_dict[index][rep_motifs[j]].append(p_value)
-            # out_dict[index][rep_motifs[j]].append(1)
             out_dict[index][rep_motifs[j]] = float(format(p_value, '.3g'))
 
         else:
@@ -382,15 +340,11 @@ for index, row in combined_df.iterrows():
             # accepting null-hypothesis
 
             print(f" \n There is no statistically significant difference between Normal and Tumor")
-
-            # out_dict[index][rep_motifs[j]].append(statstic)
-            # out_dict[index][rep_motifs[j]].append(p_value)
-            # out_dict[index][rep_motifs[j]].append(0)
+            
             out_dict[index][rep_motifs[j]] = float(format(p_value, '.3g'))
         
         print("-------------------------------")
 
-    # break
 
 
 # %%
@@ -412,12 +366,7 @@ for i in range(6):
         # Iterating through each element in the column lists
         col_sum = sum(combined_df[col].apply(lambda x: x[i]))
         sums_list.append(col_sum)
-
-    # print(f"Sum of Column Element {i}: {sums_list}")
-
         
-
-    # {rep_motifs[j]} j value signifies which motif length RDL value is being taken for t_test
 
     print(f"\n Analyzing genomic view of {rep_motifs[i]}s \n values are ref_seq:{sums_list[0:6]} cell-line:{sums_list[6:]}")
 
@@ -428,35 +377,35 @@ for i in range(6):
     # I will plot dist_plot to check for normality, will also calculate shapiro-wilks.
     # dist-plots will have 6 plots in 1 figure
 
-    # img_path = image_folder + '\\' + 'Normality' + '\\' + index
+    img_path = image_folder + '\\' + 'Normality' + '\\' + index
 
-    # if Path(img_path).is_dir():
-    #     print(f"The directory {image_folder} exists.")
-    # else:
-    #     print(f"The directory {image_folder} does not exist; attempting to create")
-    #     Path(img_path).mkdir(parents=True, exist_ok=False)
+    if Path(img_path).is_dir():
+        print(f"The directory {image_folder} exists.")
+    else:
+        print(f"The directory {image_folder} does not exist; attempting to create")
+        Path(img_path).mkdir(parents=True, exist_ok=False)
 
 
-    # fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
 
-    # fig.suptitle(f'Histogram plot of {index} {rep_motifs[j]}s', fontsize=16)
+    fig.suptitle(f'Histogram plot of {index} {rep_motifs[j]}s', fontsize=16)
 
-    # sns.distplot(temp_list[:6], hist=True, kde=True, bins=5, color="blue", ax=axes[0])
+    sns.distplot(temp_list[:6], hist=True, kde=True, bins=5, color="blue", ax=axes[0])
 
-    # axes[0].set_xlabel('Repeat Density')  # Set x-axis label for the first subplot
-    # axes[0].set_ylabel('PDF')       # Set y-axis label for the first subplot
-    # # axes[0].set_title(f'Histogram plot of {index} {rep_motifs}[j]s')
+    axes[0].set_xlabel('Repeat Density')  # Set x-axis label for the first subplot
+    axes[0].set_ylabel('PDF')       # Set y-axis label for the first subplot
+    # axes[0].set_title(f'Histogram plot of {index} {rep_motifs}[j]s')
 
-    # sns.distplot(temp_list[6:], hist=True, kde=True, bins=5, color="blue", ax=axes[1])
+    sns.distplot(temp_list[6:], hist=True, kde=True, bins=5, color="blue", ax=axes[1])
 
-    # axes[1].set_xlabel('Repeat Density')  # Set x-axis label for the first subplot
-    # axes[1].set_ylabel('PDF')       # Set y-axis label for the first subplot
-    # # axes[1].set_title(f'Histogram plot of {index} {rep_motifs}[j]s')
+    axes[1].set_xlabel('Repeat Density')  # Set x-axis label for the first subplot
+    axes[1].set_ylabel('PDF')       # Set y-axis label for the first subplot
+    # axes[1].set_title(f'Histogram plot of {index} {rep_motifs}[j]s')
 
-    # image_file = img_path + '\\' + f'{rep_motifs[j]}.png'
+    image_file = img_path + '\\' + f'{rep_motifs[j]}.png'
 
-    # plt.savefig(image_file)
-    # plt.show()
+    plt.savefig(image_file)
+    plt.show()
 
 
     # Performing Levene's test for variance homogeneity
