@@ -49,7 +49,6 @@ def run(chromosome):
 if __name__ == '__main__':
 
     print("\n Reading PERF TSV file")
-    # perf_data = common_functions.import_tsv(file=perf_file)
     perf_data = common_functions.import_tsv(file=perf_file)
 
     # determining number of valid data rows
