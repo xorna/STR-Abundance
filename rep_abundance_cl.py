@@ -59,17 +59,6 @@ def calculate_RDL(perf_file: str, result_file: str) -> None:
     perf_data = pandas.read_csv(
         filepath_or_buffer=perf_file,
         sep='\t',
-        # names=[
-        #     'Repeat Class',
-        #     'Num Reads',
-        #     'Frequency',
-        #     'Bases',
-        #     'Reads per million',
-        #     'Frequency per million',
-        #     'Bases Normalized',
-        #     'Length Distribution',
-        #     'Motif Distribution'
-        # ],
         skiprows=6, # first 6 rows contain metadata which messes up read_csv
         # header=None
     )
@@ -135,13 +124,10 @@ def calculate_RDL(perf_file: str, result_file: str) -> None:
                 }
             )
 
-    # print(RDL_genomic)
-
     # dividing RDL value by 10,000 as the og calculation uses MBP and doesnt multiply by 100. Thus dividing bases_norm by 1,000,000 (million) and then multiplying by 100 (in effect dividing by 10,000) will solve the problem.
 
     # for motif, bases_norm in RDL_genomic.items():
 
-        
 
     # writing to file
 
@@ -156,15 +142,10 @@ def calculate_RDL(perf_file: str, result_file: str) -> None:
 
 # %%
 
-# perf_folder = 'D:\ACTREC\Poster\Data\PERF\CellLine\HCC1187_BREAST_PERF\Chr_Split'
-
-# output_folder = 'D:\ACTREC\Poster\PrimaryAnalysis\Results\CellLine\HCC1187'
 
 perf_folder = perf_folder + '\*.tsv'
 
 perf_file_paths = [f.replace("\\", "/") for f in glob(perf_folder)]
-# print(perf_file_paths)
-# print(len(perf_file_paths))
 
 output_folder = output_folder.replace("\\", "/")
 
