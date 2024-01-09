@@ -1,14 +1,10 @@
 # %%
 
 # this script is written to calculate gene wise repeat abundance
-# basically i will first use my rep_abundance_chr.py code till 
-
 
 # %%#
 
-# import json
 import sys
-# import multiprocessing
 import pandas
 
 sys.path.append('D:/ACTREC/Poster')
@@ -35,10 +31,7 @@ except IndexError:
 # %%
 
 def run(chromosome, file_path, out_path):
-
-    # file_path = "D:/ACTREC/Review Paper/HumanRefGenome/GRCh38.p14/GenomeFasta/GCF_000001405.40_GRCh38.p14_genomic.fna"
-
-    # out_path = 'D:\ACTREC\Poster\PrimaryAnalysis\Results_gene\ReFGenome\GRch38.p14'
+    
 
     out_path_csv = out_path + '\\' + f"gene_RepAbn{chromosome}.csv"
     out_path_csv = out_path_csv.replace('\\', '/')
@@ -46,13 +39,6 @@ def run(chromosome, file_path, out_path):
     chr_list, chr_base_count = common_functions.chromosome_parser(chromosome=chromosome, fasta=file_path)
 
     print(chr_base_count)
-
-    # print("Running Repeat Counter \n")
-    # rep_count_list = common_functions.repeat_counter(valid_row_num=row_number,
-    #                                                  data_frame=perf_data,
-    #                                                  curr_chr=chromosome,
-    #                                                  repeat_data=chromosomes_list)
-    
     
     repeat_length_dict = {}
 
@@ -107,7 +93,6 @@ if __name__ == '__main__':
 
     print("\n Reading PERF TSV file")
     perf_data = common_functions.import_tsv(file=perf_file)
-    # perf_data = common_functions.import_tsv(file='D:/ACTREC/Poster/Data/PERF/HumanRef/GRCh38.p14_perf_annotation.tsv')
 
     # determining number of valid data rows
     print("\n Determining number of valid rows")
@@ -120,14 +105,10 @@ if __name__ == '__main__':
 
     print(len(chromosomes_list), list(chromosomes_list.items())[:5])
     print(len(chromosomes_list), list(chromosomes_list.items())[515:])
-
-    # pool = multiprocessing.Pool(processes=1)
-
-    # pool.map(run, list(chromosomes_list.keys()))
+    
 
     for chr in chromosomes_list.keys():
         run(chromosome=chr, file_path=genome_file, out_path=out_folder)
-        # break
 
 
 # %%
